@@ -13,3 +13,16 @@ export function publicationConfig(mode = "staging") {
     url: new URL(`${base.replace(/\/$/, "")}/`, site).href,
   };
 }
+
+export function publicationForPages(pages) {
+  if (pages.build_type !== "workflow")
+    throw new Error("Pages Source must be GitHub Actions");
+  if (pages.cname !== null && pages.cname !== "baidu.tokyo")
+    throw new Error("Unexpected Pages custom domain");
+  const config = publicationConfig(
+    pages.cname === null ? "staging" : "production",
+  );
+  if (pages.html_url !== config.url)
+    throw new Error("Pages URL does not match selected publication mode");
+  return config;
+}

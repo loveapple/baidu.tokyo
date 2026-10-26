@@ -13,12 +13,33 @@ concurrency:
 permissions:
   contents: read
 
-env:
-  # Custom-domain publication is a separate approved cutover.
-  PUBLICATION_MODE: staging
-
 jobs:
+  select:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: read
+    outputs:
+      mode: ${{ steps.target.outputs.mode }}
+      modes: ${{ steps.target.outputs.modes }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .node-version
+      - name: Select configured Pages target without changing it
+        id: target
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/pages-deployment.mjs select
+
   build:
+    needs: select
+    strategy:
+      matrix:
+        mode: ${{ fromJSON(needs.select.outputs.modes) }}
+    env:
+      PUBLICATION_MODE: ${{ matrix.mode }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -37,7 +58,7 @@ jobs:
 
   deploy:
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
-    needs: build
+    needs: [select, build]
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -50,6 +71,7 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     env:
       GH_TOKEN: ${{ github.token }}
+      PUBLICATION_MODE: ${{ needs.select.outputs.mode }}
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v6

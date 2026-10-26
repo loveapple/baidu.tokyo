@@ -1,10 +1,13 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
-import { readFile, readdir } from "node:fs/promises";
+import { readFile, readdir, appendFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { setTimeout as delay } from "node:timers/promises";
-import { publicationConfig } from "./publication-config.mjs";
+import {
+  publicationConfig,
+  publicationForPages,
+} from "./publication-config.mjs";
 
 export function assertTarget({
   config,
@@ -84,12 +87,8 @@ async function guard(config) {
     { mode: config.mode, url: config.url, source_sha: process.env.GITHUB_SHA },
     "Artifact provenance mismatch",
   );
-  assert.equal(
-    pages.cname,
-    null,
-    "Custom-domain deployment requires the separate approved cutover change",
-  );
   console.log(`Verified target: ${config.url} SHA=${process.env.GITHUB_SHA}`);
+  return pages;
 }
 
 export async function verifyFiles(baseUrl, files, fetcher = fetch) {
@@ -122,7 +121,12 @@ async function verify(config) {
     config.url,
     "Deployment action returned an unexpected URL",
   );
-  await guard(config);
+  const pages = await guard(config);
+  assert.equal(
+    pages.https_enforced,
+    true,
+    "Enable Pages Enforce HTTPS before claiming publication success",
+  );
   const names = await readdir("dist", { recursive: true, withFileTypes: true });
   const files = new Map(
     await Promise.all(
@@ -159,10 +163,25 @@ if (
   process.argv[1] &&
   fileURLToPath(import.meta.url) === resolve(process.argv[1])
 ) {
-  const config = publicationConfig(process.env.PUBLICATION_MODE);
-  assert.ok(
-    ["guard", "verify"].includes(process.argv[2]),
-    "Use guard or verify",
-  );
-  await (process.argv[2] === "guard" ? guard(config) : verify(config));
+  const command = process.argv[2];
+  if (command === "select") {
+    const qaOnly =
+      process.env.GITHUB_EVENT_NAME === "pull_request" ||
+      process.env.GITHUB_REF !== "refs/heads/main";
+    const config = qaOnly
+      ? publicationConfig()
+      : publicationForPages(await api("pages"));
+    await appendFile(
+      process.env.GITHUB_OUTPUT,
+      `mode=${config.mode}\nmodes=${JSON.stringify(qaOnly ? ["staging", "production"] : [config.mode])}\n`,
+    );
+    console.log(`Selected ${qaOnly ? "both modes for QA only" : config.mode}`);
+  } else {
+    const config = publicationConfig(process.env.PUBLICATION_MODE);
+    assert.ok(
+      ["guard", "verify"].includes(process.argv[2]),
+      "Use guard or verify",
+    );
+    await (process.argv[2] === "guard" ? guard(config) : verify(config));
+  }
 }

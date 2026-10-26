@@ -90,7 +90,9 @@ test("deploy requires main push or dispatch and PRs only run QA", () => {
     workflow,
     /github.event_name != 'pull_request' && github.ref == 'refs\/heads\/main'/,
   );
-  assert.match(workflow, /needs: build/);
+  assert.match(workflow, /needs: \[select, build\]/);
+  assert.match(workflow, /pages-deployment.mjs select/);
+  assert.match(workflow, /fromJSON\(needs.select.outputs.modes\)/);
   assert.match(workflow, /workflow_dispatch:/);
   assert.match(workflow, /pages-deployment.mjs guard/);
   assert.match(workflow, /pages-deployment.mjs verify/);

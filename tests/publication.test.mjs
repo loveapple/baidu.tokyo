@@ -1,6 +1,9 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { publicationConfig } from "../scripts/publication-config.mjs";
+import {
+  publicationConfig,
+  publicationForPages,
+} from "../scripts/publication-config.mjs";
 import { assertTarget, verifyFiles } from "../scripts/pages-deployment.mjs";
 
 const sha = "a".repeat(40);
@@ -27,6 +30,39 @@ test("deployment accepts matching main, Actions Pages and no additional approval
     assertTarget({
       config: publicationConfig(),
       pages,
+      environment,
+      sha,
+      mainSha: sha,
+      ref: "refs/heads/main",
+    }),
+  );
+});
+
+test("Pages selects staging or production from its exact configured target", () => {
+  assert.equal(publicationForPages(pages).mode, "staging");
+  assert.equal(
+    publicationForPages({
+      ...pages,
+      cname: "baidu.tokyo",
+      html_url: "https://baidu.tokyo/",
+    }).mode,
+    "production",
+  );
+  assert.throws(() =>
+    publicationForPages({ ...pages, cname: "other.example" }),
+  );
+  assert.throws(() => publicationForPages({ ...pages, cname: "baidu.tokyo" }));
+});
+
+test("production deployment accepts only its custom domain and root URL", () => {
+  assert.doesNotThrow(() =>
+    assertTarget({
+      config: publicationConfig("production"),
+      pages: {
+        ...pages,
+        cname: "baidu.tokyo",
+        html_url: "https://baidu.tokyo/",
+      },
       environment,
       sha,
       mainSha: sha,
