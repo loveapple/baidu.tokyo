@@ -1,5 +1,7 @@
 # GitHub Pagesの公開方式・比較・QA
 
+本書はPR #2時点のStaging準備記録。現在の公開状態とProduction対応・切替手順は [custom-domain-cutover.md](custom-domain-cutover.md) を参照。以下の「legacy」「404」「Staging固定」は当時の観測・仕様。
+
 確認日: 2026-10-26（日本時間）。参考repoは読み取りのみ。下記はGitHub APIと最新origin/mainから取得した時点の状態であり、将来の設定を保証しない。
 
 ## 比較対象

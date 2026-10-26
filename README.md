@@ -30,9 +30,9 @@ npm run preview -- --host 127.0.0.1
 
 ## GitHub Pages Staging
 
-初期公開URLは `https://loveapple.github.io/baidu.tokyo/`。WorkflowはStaging固定。canonical、OGP、sitemap、robots、静的アセットは同じURL設定を使う。
+PagesのCustom domainが未設定なら `https://loveapple.github.io/baidu.tokyo/`、`baidu.tokyo`なら `https://baidu.tokyo/` を選択する。別ドメイン・URL不一致は拒否する。PRとmain以外の手動実行は両モードのQAのみ。canonical、OGP、sitemap、robots、静的アセットは同じURL設定を使う。
 
-初回公開前に、管理権限で Settings → Pages → Source を **GitHub Actions** に変更する（現在のlegacy設定ではガードが拒否する）。Custom domainは未設定を維持する。`github-pages` environmentはmain限定、Required reviewers・Wait timerなしにする。今回これらの設定は変更しない。
+Pages SourceはGitHub Actions、`github-pages` environmentはmain限定、Required reviewers・Wait timerなしを使用する。2026-10-26の確認時点ですでにこの構成で、Custom domainは未設定。Staging公開済み。今回これらの設定は変更しない。
 
 その後、PRをmainへマージするとQA→配信→公開物検証が自動実行される。追加承認・公開ゲート変数は不要。mainのActions画面から **Run workflow** も実行可能。main以外の手動実行はQAのみでdeployしない。PRからのartifact配信・deployは行わない。
 
@@ -42,4 +42,6 @@ npm run preview -- --host 127.0.0.1
 
 ローカルでは `PUBLICATION_MODE=production` を環境変数に設定すると `site=https://baidu.tokyo`、`base=/` でbuild/testできる。未指定はStaging。無効な値はbuildを拒否する。PowerShellでは `$env:PUBLICATION_MODE='production'` を使用し、終了後に `Remove-Item Env:PUBLICATION_MODE` で戻す。
 
-公開切替には別途承認したPRでWorkflowのmodeと独自ドメイン配信禁止ガードを変更し、Pages Custom domain/DNS/HTTPSを確認する必要がある。URL選択だけでドメイン切替はできない。Staging成果物はCustom domainが存在するPagesへの配信を拒否する。DNS・ConoHa VPS・旧WordPress・MySQLの変更や停止は自動化しない。
+実際の切替は別途承認後、Pages Custom domain/DNS/HTTPSを変更・確認する。Workflowは設定された配信先を読み取るだけで、ドメイン設定を変更しない。StagingとProductionのartifactは相互に誤配信を拒否する。公開検証の成功にはEnforce HTTPSも必要。
+
+現状のDNS不一致・メール依存・切替順序・復旧条件は [docs/custom-domain-cutover.md](docs/custom-domain-cutover.md) を参照。実切替は未実施で、DNS・ConoHa VPS・旧WordPress・MySQLの変更や停止は自動化しない。
