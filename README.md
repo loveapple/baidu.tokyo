@@ -22,22 +22,24 @@ npm run preview -- --host 127.0.0.1
 - `src/pages/robots.txt.ts`: 同じsite/baseからrobots.txtを生成
 - `public/images/`: 確認済み書籍表紙、独自のOGP画像とSVG原稿
 - `tests/site.test.mjs`: 出力HTML、ローカルアセット、リンク、SEO、公開条件の検証
-- `.github/workflows/pages.yml`: PR/mainで検証、承認されたmain pushだけデプロイ
+- `.github/workflows/deploy.yml`: PRはQAのみ、main pushとmainの手動実行はQA成功後に自動配信
+- `scripts/publication-config.mjs`: Staging/ProductionのURL設定
+- `scripts/pages-deployment.mjs`: 配信先ガード、公開SHAと成果物の照合
 
-掲載情報の根拠は [docs/sources.md](docs/sources.md)、検証結果は [docs/qa.md](docs/qa.md) を参照。
+掲載情報は [docs/sources.md](docs/sources.md)、最新の公開方式・比較・QAは [docs/pages-deployment.md](docs/pages-deployment.md) を参照。[docs/qa.md](docs/qa.md) は初期LPの検証記録。
 
-## 公開切替（このPRでは実施しない）
+## GitHub Pages Staging
 
-初期の公開候補URLは `https://loveapple.github.io/baidu.tokyo/`。まだデプロイしていない。`https://baidu.tokyo/` は既存サイトのためcanonicalに使用していない。
+初期公開URLは `https://loveapple.github.io/baidu.tokyo/`。WorkflowはStaging固定。canonical、OGP、sitemap、robots、静的アセットは同じURL設定を使う。
 
-1. Draft PRの内容、書籍情報、表紙の利用権を確認し、公開担当者がマージと公開を明示承認する。
-2. GitHubの Settings → Pages → Source を **GitHub Actions** に設定する。必要なら `github-pages` environmentに承認者を設定する。これらの設定は本作業では変更しない。
-3. 承認後にPRをmainへマージする。承認変数が未設定の間はbuild/testのみで、公開しない。
-4. 公開担当者が repository variable **`PAGES_DEPLOY_ENABLED=true`** を設定し、mainに次の承認済みコミットをpushする。またはマージ前に変数を設定して、そのマージを公開トリガーにする。
-5. Actionsのbuild/deploy完了後、上記URLのHTTP応答、画像・CSS、canonical、OGP、sitemap、robotsを確認する。失敗時は `PAGES_DEPLOY_ENABLED` をfalseに戻して追加配信を止め、修正をPRでレビューする。変数の無効化だけでは既存の公開物は取り下げられない。
+初回公開前に、管理権限で Settings → Pages → Source を **GitHub Actions** に変更する（現在のlegacy設定ではガードが拒否する）。Custom domainは未設定を維持する。`github-pages` environmentはmain限定、Required reviewers・Wait timerなしにする。今回これらの設定は変更しない。
 
-ワークフローを手動実行するトリガーはなく、PRイベントからのdeployもない。Pages自動有効化の処理やCNAMEは追加していない。
+その後、PRをmainへマージするとQA→配信→公開物検証が自動実行される。追加承認・公開ゲート変数は不要。mainのActions画面から **Run workflow** も実行可能。main以外の手動実行はQAのみでdeployしない。PRからのartifact配信・deployは行わない。
 
-独自ドメインを使う将来の切替では、別途承認した作業として、`astro.config.mjs` のsiteを `https://baidu.tokyo`、baseを `/` に変更し、URLの回帰テストを更新する。その後にPagesのCustom domain、DNS、HTTPS、旧URLや旧VPSの扱いを計画・確認する。本PRはDNS・旧VPS・本番公開設定を変更しない。ドメイン切替と旧VPS停止は自動化しない。
+`publication.json` に `mode`・`url`・`source_sha` を保存する。配信直前・配信後にmain HEADとの一致を確認し、公開URLの全ファイルを同じrunのartifactとSHA-256照合する。HTTPエラー・リダイレクト・内容不一致を成功扱いしない。配信後の検証失敗はrunを失敗にするが、公開物を自動で巻き戻すものではない。
 
-空リポジトリのため、PR比較先のmainはファイルのない初期コミットのみ。LP・依存関係・CIはすべて作業ブランチに含める。
+## 将来の独自ドメイン切替
+
+ローカルでは `PUBLICATION_MODE=production` を環境変数に設定すると `site=https://baidu.tokyo`、`base=/` でbuild/testできる。未指定はStaging。無効な値はbuildを拒否する。PowerShellでは `$env:PUBLICATION_MODE='production'` を使用し、終了後に `Remove-Item Env:PUBLICATION_MODE` で戻す。
+
+公開切替には別途承認したPRでWorkflowのmodeと独自ドメイン配信禁止ガードを変更し、Pages Custom domain/DNS/HTTPSを確認する必要がある。URL選択だけでドメイン切替はできない。Staging成果物はCustom domainが存在するPagesへの配信を拒否する。DNS・ConoHa VPS・旧WordPress・MySQLの変更や停止は自動化しない。
