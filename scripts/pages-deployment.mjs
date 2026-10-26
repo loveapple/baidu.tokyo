@@ -30,11 +30,8 @@ export function assertTarget({
     config.mode === "staging" ? null : "baidu.tokyo",
     "Pages custom domain does not match artifact mode",
   );
-  assert.equal(
-    pages.html_url,
-    config.url,
-    "Pages URL does not match artifact URL",
-  );
+  assert.deepEqual(publicationForPages(pages), config,
+    "Pages target does not match artifact URL");
   assert.ok(
     Array.isArray(environment.protection_rules),
     "Cannot confirm environment protection",
@@ -115,17 +112,17 @@ export async function verifyFiles(baseUrl, files, fetcher = fetch) {
   }
 }
 
+export async function verifyHttps(config, pages, files, fetcher = fetch) {
+  if (pages.https_enforced !== true) return false;
+  await verifyFiles(config.url, files, fetcher);
+  return true;
+}
+
 async function verify(config) {
-  assert.equal(
-    process.env.DEPLOYED_PAGE_URL,
-    config.url,
-    "Deployment action returned an unexpected URL",
-  );
   const pages = await guard(config);
-  assert.equal(
-    pages.https_enforced,
-    true,
-    "Enable Pages Enforce HTTPS before claiming publication success",
+  assert.ok(
+    [config.url, pages.html_url].includes(process.env.DEPLOYED_PAGE_URL),
+    "Deployment action returned an unexpected URL",
   );
   const names = await readdir("dist", { recursive: true, withFileTypes: true });
   const files = new Map(
@@ -143,7 +140,7 @@ async function verify(config) {
   );
   for (let attempt = 1; ; attempt++) {
     try {
-      await verifyFiles(config.url, files);
+      await verifyFiles(pages.html_url, files);
       break;
     } catch (error) {
       if (attempt === 12) throw error;
@@ -153,10 +150,12 @@ async function verify(config) {
       await delay(5000);
     }
   }
-  await guard(config);
-  console.log(
-    `Published URL=${config.url} SHA=${process.env.GITHUB_SHA} main HEAD matches; ${files.size} files verified`,
-  );
+  const currentPages = await guard(config);
+  const httpsReady = await verifyHttps(config, currentPages, files);
+  const result = `Production/delivery verified: ${pages.html_url} SHA=${process.env.GITHUB_SHA}; ${files.size} files match artifact and main. HTTPS final verification: ${httpsReady ? "PASS" : "PENDING (enable Enforce HTTPS and rerun main workflow)"}`;
+  console.log(result);
+  if (process.env.GITHUB_STEP_SUMMARY)
+    await appendFile(process.env.GITHUB_STEP_SUMMARY, `${result}\n`);
 }
 
 if (

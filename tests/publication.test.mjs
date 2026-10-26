@@ -4,7 +4,7 @@ import {
   publicationConfig,
   publicationForPages,
 } from "../scripts/publication-config.mjs";
-import { assertTarget, verifyFiles } from "../scripts/pages-deployment.mjs";
+import { assertTarget, verifyFiles, verifyHttps } from "../scripts/pages-deployment.mjs";
 
 const sha = "a".repeat(40);
 const environment = { protection_rules: [{ type: "branch_policy" }] };
@@ -137,4 +137,35 @@ test("published files must exactly match artifact bytes without redirects", asyn
     ),
   );
   await assert.rejects(verifyFiles(pages.html_url, new Map()));
+});
+
+for (const [url, enforced, accepted] of [
+  ["http://baidu.tokyo/", false, true],
+  ["http://baidu.tokyo/", true, false],
+  ["http://baidu.tokyo/", undefined, false],
+  ["http://other.example/", false, false],
+  ["http://baidu.tokyo/baidu.tokyo/", false, false],
+  ["http://baidu.tokyo:8080/", false, false],
+  ["https://baidu.tokyo/", true, true],
+]) test(`certificate transition ${url} enforced=${enforced}`, () => {
+  const check = () => assertTarget({
+    config: publicationConfig("production"),
+    pages: { build_type: "workflow", cname: "baidu.tokyo", html_url: url, https_enforced: enforced },
+    environment, sha, mainSha: sha, ref: "refs/heads/main",
+  });
+  if (accepted) assert.doesNotThrow(check);
+  else assert.throws(check);
+});
+
+test("HTTPS final status stays pending until enforced and fails on TLS or bytes", async () => {
+  const config = publicationConfig("production");
+  const files = new Map([["index.html", Buffer.from("LP")]]);
+  const unexpectedFetch = () => { throw new Error("must not fetch pending HTTPS"); };
+  assert.equal(await verifyHttps(config, { https_enforced: false }, files, unexpectedFetch), false);
+  assert.equal(await verifyHttps(config, { https_enforced: true }, files, async url => {
+    assert.equal(url.origin, "https://baidu.tokyo");
+    return new Response("LP");
+  }), true);
+  await assert.rejects(verifyHttps(config, { https_enforced: true }, files, unexpectedFetch));
+  await assert.rejects(verifyHttps(config, { https_enforced: true }, files, async () => new Response("stale")));
 });
