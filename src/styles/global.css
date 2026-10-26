@@ -193,26 +193,10 @@ nav a:hover {
   border-color: #deddd1;
 }
 .hexagram {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
+  display: block;
   transform: rotate(-8deg);
   width: 156px;
   z-index: 1;
-}
-.hexagram i {
-  height: 16px;
-  background: var(--ink);
-  display: block;
-}
-.hexagram .broken {
-  background: linear-gradient(
-    to right,
-    var(--ink) 43%,
-    transparent 43%,
-    transparent 57%,
-    var(--ink) 57%
-  );
 }
 .art-caption {
   position: absolute;
@@ -507,10 +491,6 @@ nav a:hover {
   }
   .hexagram {
     width: 130px;
-    gap: 13px;
-  }
-  .hexagram i {
-    height: 13px;
   }
   .hero-art {
     min-height: 400px;
