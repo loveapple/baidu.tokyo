@@ -1,5 +1,17 @@
 # baidu.tokyo 独自ドメイン移行準備
 
+## 後続調査（2026-10-26、PR #3マージ後）
+
+以下の旧スナップショット後、mainは`0e6f5af1f0992296d7d6e445ee75081e0957b5aa`へ進み、Pages Custom domain=baidu.tokyo、apex A=Pagesの4件へ変更済みであることを読み取り確認した。今回の調査では設定変更していない。HTTPSは未成立、HTTPで旧Staging marker（e6eed12）とCSS 404を確認し、移行完了判定は引き続きNo-Go。
+
+`.tokyo`上位DNS全4系統の正式な実委任先は`ns11/12/13.value-domain.com`。この3台は同じA/MX/SOAを返すが、子ゾーンNSは旧Alibaba/Yunjiasuの4台を指定したままで、これが親子NS不整合の直接原因。AlibabaのAA回答は現行レジストラ委任を証明しない。SOA primaryがns1.value-domain.comであること自体を異常とは判断しない。レジストラ画面と変更履歴は未確認。
+
+MX宛先は正式委任先でもNXDOMAIN。旧VPSには本文を読まず集計した保存メールが5件・13,826,504 bytesあり、未使用/削除可とは判断できない。旧IP固定・既存host keyの厳密照合によるSSHと、旧WebのHTTPS 200を確認した。CMS/divinationとDB/Docker/root cron等の未確認依存が残るため、VPS廃止もNo-Go。
+
+調査正本と必要な修正案は [ran-deckのDNS・メール・VPS廃止前調査](https://github.com/happinesea/ran-deck/blob/c259fcf54e6a0c50b045228065c4858795775703/docs/operations/baidu-dns-vps-retirement-audit-2026-10-26.md)（[Draft PR #31](https://github.com/happinesea/ran-deck/pull/31)）を参照。DNS/メール修正・Production再配信・VPS停止は別途承認して行う。以降の「未切替」「Custom domain=null」は前回の時点記録であり現状ではない。
+
+## PR #3作成時点の記録
+
 確認日: 2026-10-26（日本時間、約19:30–19:40）。**実切替は未実施。DNS不一致と依存関係の未確認事項が残るため、現時点の切替判定はNo-Go。** ソフトウェアの準備完了をDNS切替やVPS廃止の許可と扱わない。
 
 ## 現在の公開状態
