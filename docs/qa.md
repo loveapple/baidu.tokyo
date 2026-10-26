@@ -39,6 +39,6 @@ GitHub repository variablesは未設定、Pages APIのGETは404。設定変更�
 
 ## 未実施・残課題
 
-- GitHub Actionsの結果はPR作成後に確認する。公開ジョブの実行は対象外。
+- GitHub ActionsのLinux上の結果は [Draft PR #1 のChecks](https://github.com/loveapple/baidu.tokyo/pull/1/checks) で、最新headに対応する結果を確認する。ローカルの成功とは区別する。公開ジョブの実行は対象外。
 - 実機iOS/Android、Safari/Firefox、スクリーンリーダー実機、SNSプラットフォームのOGP取得は未検証。
 - 最終的な表紙利用権の確認、マージ・公開承認、Pages Sourceと承認変数の設定は公開担当者の作業。独自ドメイン切替は別途承認・計画する。
