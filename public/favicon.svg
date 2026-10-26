@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <title>火風鼎（第50卦・䷱）：上卦は離（火）、下卦は巽（風・木）。木生火。</title>
+  <rect width="64" height="64" rx="8" fill="#963f32"/>
+  <g id="ding" stroke="#f5f2e9" stroke-width="4">
+    <path d="M15 14H49"/>
+    <path d="M15 21H28M36 21H49"/>
+    <path d="M15 28H49"/>
+    <path d="M15 35H49"/>
+    <path d="M15 42H49"/>
+    <path d="M15 49H28M36 49H49"/>
+  </g>
+</svg>

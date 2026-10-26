@@ -1,0 +1,273 @@
+---
+import "../styles/global.css";
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const canonical = new URL(`${base}/`, Astro.site);
+const title = "燊然居士｜易を読み、変化を考える。";
+const description =
+  "燊然居士の著者・電子書籍紹介。郝　春利著『脱依存の経済学』と、今後の執筆テーマである易経・六十四卦を紹介します。";
+const bookUrl = "https://link.amazon/B0fDC1J7c";
+const authorUrl = "https://www.amazon.co.jp/stores/author/B08L4PG3P4/about";
+---
+
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f5f2e9" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/svg+xml" href={`${base}/favicon.svg`} />
+    <link rel="sitemap" href={`${base}/sitemap-index.xml`} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="燊然居士｜baidu.tokyo" />
+    <meta property="og:locale" content="ja_JP" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta
+      property="og:image"
+      content={new URL(`${base}/images/ogp.png`, Astro.site)}
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="燊然居士。易を読み、変化を考える。"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta
+      name="twitter:image"
+      content={new URL(`${base}/images/ogp.png`, Astro.site)}
+    />
+    <meta
+      name="twitter:image:alt"
+      content="燊然居士。易を読み、変化を考える。"
+    />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">
+      本文へ移動
+    </a>
+    <header class="site-header wrap">
+      <a class="brand" href={`${base}/`} aria-label="燊然居士 ホーム">
+        <span class="brand-seal" aria-hidden="true">
+          燊
+        </span>
+        <span>
+          燊然居士<small>SHINZEN KOJI</small>
+        </span>
+      </a>
+      <nav aria-label="メインナビゲーション">
+        <a href="#books">書籍</a>
+        <a href="#author">著者</a>
+        <a href="#iching">易と六十四卦</a>
+      </nav>
+    </header>
+
+    <main id="main" tabindex="-1">
+      <section class="hero wrap" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow">
+            <span aria-hidden="true">一</span> 古典のまなざしで、現代を読む
+          </p>
+          <h1 id="hero-title">
+            易を読み、
+            <br />
+            変化を考える。
+          </h1>
+          <p class="hero-lead">
+            六十四卦に映る、
+            <br class="mobile-break" />
+            経営と人生の選択。
+          </p>
+          <p class="hero-description">
+            変わり続ける世界で、何を見つめ、どう選ぶか。
+            <br />
+            中国古典と現代社会を手がかりに、
+            <br />
+            目の前の出来事の、その先を考える。
+          </p>
+          <a class="button" href="#books">
+            既刊書籍を読む <span aria-hidden="true">↗</span>
+          </a>
+        </div>
+        <div class="hero-art" aria-hidden="true">
+          <div class="orbit orbit-outer"></div>
+          <div class="orbit orbit-inner"></div>
+          <span class="art-caption">変化のなかに、道を見つける。</span>
+          <img
+            class="hexagram"
+            src={`${base}/images/ding.svg`}
+            width="156"
+            height="171"
+            alt="火風鼎（第50卦・䷱）：上卦は離（火）、下卦は巽（風・木）。木生火。"
+          />
+          <span class="art-number">
+            六十四の視点
+            <br />
+            <b>六十四卦</b>
+          </span>
+          <span class="art-seal">
+            観<br />変
+          </span>
+        </div>
+        <div class="hero-foot">
+          <span>燊然居士の著者・書籍紹介</span>
+          <a href="#books">
+            SCROLL TO READ <span aria-hidden="true">↓</span>
+          </a>
+        </div>
+      </section>
+
+      <section id="books" class="books section" aria-labelledby="books-title">
+        <div class="wrap">
+          <div class="section-heading">
+            <p class="eyebrow">01 — BOOK</p>
+            <h2 id="books-title">いま、社会を読み解く一冊。</h2>
+          </div>
+          <div class="book-grid">
+            <figure class="book-figure">
+              <div class="book-stage">
+                <img
+                  src={`${base}/images/datsuizon-cover.jpg`}
+                  alt="『脱依存の経済学: 中国「去依附」から読む、日本の国益・円安・資源危機』の表紙"
+                  width="266"
+                  height="425"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+              <figcaption>刊行済み電子書籍 · Kindle版</figcaption>
+            </figure>
+            <div class="book-copy">
+              <p class="category">経済・社会評論</p>
+              <h3>
+                脱依存の経済学
+                <span class="book-subtitle">
+                  中国「去依附」から読む、
+                  <br />
+                  日本の国益・円安・資源危機
+                </span>
+              </h3>
+              <p class="byline">郝　春利 著</p>
+              <p class="book-intro">
+                日本は何に依存し、
+                <br />
+                どこに選択の余地があるのか。
+              </p>
+              <p>
+                中国の「去依附」を手がかりに、中国経済と日本の国益、円安や資源・供給網のリスクを読み解く政治経済書です。
+              </p>
+              <p>
+                依存を断つという言葉から一歩進み、何を分散し、何を守るか。国家・企業・生活者をつなぐ構造から、現代の経済と社会を考えます。
+              </p>
+              <a
+                class="button"
+                href={bookUrl}
+                rel="sponsored noopener noreferrer"
+              >
+                Amazonで書籍を見る <span aria-hidden="true">↗</span>
+              </a>
+              <p class="source-note">
+                書籍情報・表紙：
+                <a href="https://www.amazon.co.jp/dp/B0HB34S81L">
+                  Amazon商品ページ
+                </a>
+                。価格・配信状況はAmazonでご確認ください。
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="author"
+        class="author section wrap"
+        aria-labelledby="author-title"
+      >
+        <div class="author-heading">
+          <p class="eyebrow">02 — AUTHOR</p>
+          <p class="author-mark" aria-hidden="true">
+            燊
+          </p>
+          <h2 id="author-title">
+            燊然居士<span>しんぜんこじ</span>
+          </h2>
+          <p class="author-name">郝 春利 ／ ハオ・シュンリ</p>
+        </div>
+        <div class="author-copy">
+          <h3>
+            仕組みを見つめ、
+            <br />
+            変化の本質を考える。
+          </h3>
+          <p>
+            ソフトウェアの設計・開発に長年携わってきたエンジニア。燊然居士の号で、中国古典と現代社会を結ぶ著者活動に取り組んでいます。
+          </p>
+          <p>
+            易経や道徳経への関心を軸に、古典の思想を仕事の判断、人間関係、事業経営、経済構造と結びつけて考えます。論理と構造を大切にしながら、出来事の背後にある仕組みを読み解くことが執筆のテーマです。
+          </p>
+          <a class="text-link" href={authorUrl}>
+            Amazonの著者紹介を読む <span aria-hidden="true">↗</span>
+          </a>
+        </div>
+      </section>
+
+      <section
+        id="iching"
+        class="iching section"
+        aria-labelledby="iching-title"
+      >
+        <div class="wrap">
+          <div class="section-heading">
+            <p class="eyebrow">03 — I CHING</p>
+            <h2 id="iching-title">
+              六十四のかたち。
+              <br />
+              変化を考える、
+              <br class="mobile-break" />
+              ひとつの入口。
+            </h2>
+            <p class="theme-label">今後の執筆テーマ</p>
+          </div>
+          <div class="iching-grid">
+            <p class="iching-lead">
+              時を知り、
+              <br />
+              関係を見つめ、
+              <br />
+              次の一歩を考える。
+            </p>
+            <div>
+              <p>
+                易経は、変化を読み解く中国古典です。陰と陽を表す二種類の線を六本重ねた「卦」は、全部で六十四通り。さまざまな状況を、異なるかたちで表します。
+              </p>
+              <p>
+                そのかたちを、経営や人生の選択にどう重ねて読めるのか。燊然居士が今後の執筆で考えていきたいテーマです。
+              </p>
+              <p class="iching-note">
+                ここでの易経・六十四卦の紹介は、既刊『脱依存の経済学』の内容紹介とは別のものです。
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer wrap">
+      <a class="footer-brand" href={`${base}/`}>
+        燊然居士<small>baidu.tokyo</small>
+      </a>
+      <p>古典を読み、社会を見つめ、自分の選択を考える。</p>
+      <a href="#main" class="back-top">
+        ページ上部へ <span aria-hidden="true">↑</span>
+      </a>
+      <small class="copyright">© {new Date().getFullYear()} 燊然居士</small>
+    </footer>
+  </body>
+</html>
