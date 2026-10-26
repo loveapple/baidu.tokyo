@@ -22,7 +22,10 @@ export function publicationForPages(pages) {
   const config = publicationConfig(
     pages.cname === null ? "staging" : "production",
   );
-  if (pages.html_url !== config.url)
+  // Pages advertises HTTP while Enforce HTTPS is disabled during certificate setup.
+  const pendingHttps = config.mode === "production" &&
+    pages.https_enforced === false && pages.html_url === "http://baidu.tokyo/";
+  if (pages.html_url !== config.url && !pendingHttps)
     throw new Error("Pages URL does not match selected publication mode");
   return config;
 }
