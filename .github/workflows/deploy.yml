@@ -1,0 +1,74 @@
+name: Validate and deploy Pages
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: pages-${{ github.event_name == 'pull_request' && github.ref || 'main' }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  # Custom-domain publication is a separate approved cutover.
+  PUBLICATION_MODE: staging
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+      - run: npm run build
+      - run: npm test
+      - uses: actions/upload-pages-artifact@v5
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        with:
+          path: dist
+
+  deploy:
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+      deployments: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .node-version
+      - uses: actions/download-artifact@v6
+        with:
+          name: github-pages
+          path: .cache/pages-artifact
+      - name: Extract the exact build artifact
+        run: |
+          mkdir dist
+          tar -xf .cache/pages-artifact/artifact.tar -C dist
+      - name: Verify Pages target, environment, artifact SHA and current main
+        run: node scripts/pages-deployment.mjs guard
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
+      - name: Verify published URL, SHA and every asset against the artifact
+        env:
+          DEPLOYED_PAGE_URL: ${{ steps.deployment.outputs.page_url }}
+        run: node scripts/pages-deployment.mjs verify

@@ -1,4 +1,6 @@
-# QA結果
+# QA結果（初期LP・PR #1時点）
+
+公開方式の現行仕様・設定状態・追加QAは [pages-deployment.md](pages-deployment.md) を参照。本書の公開ゲートと空のmainに関する記述は当時の記録。
 
 実施日: 2026-10-26（日本時間）。Windows / Node.js v24.11.1 / npm 11.6.2。
 

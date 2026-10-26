@@ -1,9 +1,11 @@
 import assert from "node:assert/strict";
 import { readFileSync, existsSync } from "node:fs";
 import test from "node:test";
+import { publicationConfig } from "../scripts/publication-config.mjs";
 
 const read = (path) => readFileSync(new URL(path, import.meta.url), "utf8");
-const canonical = "https://loveapple.github.io/baidu.tokyo/";
+const canonical = publicationConfig(process.env.PUBLICATION_MODE).url;
+const base = new URL(canonical).pathname;
 
 test("LP has Japanese landmarks and verified book identity", () => {
   const html = read("../dist/index.html");
@@ -50,18 +52,20 @@ test("SEO URLs, sitemap and robots agree on project Pages URL", () => {
     ),
   );
   assert.ok(!existsSync(new URL("../public/CNAME", import.meta.url)));
+  assert.ok(!existsSync(new URL("../dist/CNAME", import.meta.url)));
+  const marker = JSON.parse(read("../dist/publication.json"));
+  assert.equal(marker.url, canonical);
+  assert.equal(marker.mode, process.env.PUBLICATION_MODE || "staging");
+  assert.match(marker.source_sha, /^[a-f0-9]{40}$/);
 });
 
 test("local assets and anchor destinations exist, images have alternatives and dimensions", () => {
   const html = read("../dist/index.html");
   for (const match of html.matchAll(/(?:href|src)="(\/[^"?#]+)"/g)) {
-    assert.ok(match[1].startsWith("/baidu.tokyo/"), match[1]);
+    assert.ok(match[1].startsWith(base), match[1]);
     assert.ok(
       existsSync(
-        new URL(
-          `../dist/${match[1].slice("/baidu.tokyo/".length)}`,
-          import.meta.url,
-        ),
+        new URL(`../dist/${match[1].slice(base.length)}`, import.meta.url),
       ),
       match[1],
     );
@@ -78,15 +82,20 @@ test("local assets and anchor destinations exist, images have alternatives and d
   assert.equal(png.readUInt32BE(20), 630);
 });
 
-test("deploy requires approved main push and CI has read-only default permissions", () => {
-  const workflow = read("../.github/workflows/pages.yml");
+test("deploy requires main push or dispatch and PRs only run QA", () => {
+  const workflow = read("../.github/workflows/deploy.yml");
   assert.match(workflow, /pull_request:/);
   assert.match(workflow, /contents: read/);
   assert.match(
     workflow,
-    /github.event_name == 'push' && github.ref == 'refs\/heads\/main' && vars.PAGES_DEPLOY_ENABLED == 'true'/,
+    /github.event_name != 'pull_request' && github.ref == 'refs\/heads\/main'/,
   );
   assert.match(workflow, /needs: build/);
+  assert.match(workflow, /workflow_dispatch:/);
+  assert.match(workflow, /pages-deployment.mjs guard/);
+  assert.match(workflow, /pages-deployment.mjs verify/);
+  assert.match(workflow, /cancel-in-progress: false/);
+  assert.doesNotMatch(workflow, /PAGES_DEPLOY_ENABLED/);
   assert.match(workflow, /npm ci/);
   assert.match(workflow, /npm run check/);
   assert.match(workflow, /npm run build/);
