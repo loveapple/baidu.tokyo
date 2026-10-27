@@ -34,7 +34,7 @@ try {
     const page = await context.newPage();
     for (const width of [1280,390]) {
       await page.setViewportSize({width,height:900});
-      for (const path of ["/", "/operator/", "/privacy/", "/contact/"]) {
+      for (const path of ["/", "/operator/", "/privacy/", "/contact/", "/philosophy/"]) {
         const failures = [];
         const onResponse = r => { if(r.status() >= 400) failures.push(r.url()); };
         page.on("response", onResponse);
@@ -79,5 +79,5 @@ try {
     }
     await context.close();
   }
-  console.log("E2E PASS: 4 pages x 2 viewports, automated GA silent, simulated production click/keyboard/middle/ctrl once; no real external traffic");
+  console.log("E2E PASS: 5 pages x 2 viewports, automated GA silent, simulated production click/keyboard/middle/ctrl once; no real external traffic");
 } finally { await browser.close(); }
