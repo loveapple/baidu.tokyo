@@ -1,0 +1,30 @@
+---
+import SiteLayout from "../layouts/SiteLayout.astro";
+import { lineUrl, siteSettings } from "../config/site.mjs";
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+---
+<SiteLayout title="運営者情報｜燊然" description="燊然の運営者情報">
+<main id="main" class="wrap info-page" tabindex="-1">
+<a href={`${base}/`}>燊然居士 ホーム</a>
+<h1>運営者情報</h1>
+<p>「燊然」は、個人事業主happineseaが運営する情報発信ブランドです。易経・六十四卦をはじめとする中国古典の哲学思想を手がかりに、経済・社会・日常生活における物事の関係性や変化を考察するための方法論を発信します。</p>
+<p>完成された答えを一方的に示すのではなく、読者とともに問いを重ね、考えることを大切にしています。</p>
+<p>現在は情報発信を中心としており、将来的には易経の理解を助ける学習ツールやAIを活用した哲学的分析支援も検討しています。これらは現在提供中のサービスではありません。</p>
+<dl>
+<dt>ブランド名</dt>
+<dd>燊然</dd>
+<dt>運営者</dt>
+<dd>個人事業主 happinesea</dd>
+<dt>Webサイト</dt>
+<dd>
+<a href="https://baidu.tokyo/">https://baidu.tokyo/</a>
+</dd>
+</dl>
+<h2>お問い合わせ</h2>
+<p>
+<a href={lineUrl}>{siteSettings.lineName}</a>（LINE公式アカウント：{siteSettings.lineId}）</p>
+<p>
+<a href={`${base}/contact/`}>お問い合わせのご案内</a> ／ <a href={`${base}/privacy/`}>プライバシーポリシー</a>
+</p>
+</main>
+</SiteLayout>

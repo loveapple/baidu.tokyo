@@ -1,0 +1,15 @@
+---
+import SiteLayout from "../layouts/SiteLayout.astro";
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+---
+<SiteLayout title="プライバシーポリシー｜燊然" description="燊然のプライバシーポリシー">
+<main id="main" class="wrap info-page" tabindex="-1">
+<a href={`${base}/`}>燊然居士 ホーム</a>
+<h1>プライバシーポリシー</h1>
+<p>当サイトは、閲覧状況の把握と情報発信の改善のためGoogle Analytics 4を利用します。GoogleのタグはCookie等を使用し、閲覧ページ、IPアドレスや端末・ブラウザ等に関する情報をGoogleへ送信する場合があります。</p>
+<p>Amazonの電子書籍購入・紹介リンクのクリックを amazon_1 イベントとして計測します。クリック数はAmazonでの購入・成約件数を示すものではありません。イベントには記事パスとAmazonのドメインを含め、氏名・メールアドレスやリンク先のクエリは付与しません。</p>
+<p>本番サイトでのみ計測し、ブラウザのDo Not TrackまたはGlobal Privacy Controlが有効な場合は当サイトの計測タグを読み込みません。ブラウザ設定によるCookieの制限や、Google提供のオプトアウト手段も利用できます。</p>
+<p>Googleによる情報処理については、<a href="https://policies.google.com/technologies/partner-sites?hl=ja">Googleのパートナーサイトの情報利用</a>、<a href="https://policies.google.com/privacy?hl=ja">Googleプライバシーポリシー</a>、<a href="https://tools.google.com/dlpage/gaoptout?hl=ja">Google Analyticsオプトアウトアドオン</a>をご確認ください。</p>
+<p>外部リンク先（Amazon・LINE等）では、各サービスのプライバシーポリシーが適用されます。お問い合わせで送信された情報は対応のために利用します。</p>
+</main>
+</SiteLayout>

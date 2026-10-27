@@ -1,0 +1,16 @@
+---
+import SiteLayout from "../layouts/SiteLayout.astro";
+import { lineUrl, siteSettings } from "../config/site.mjs";
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+---
+<SiteLayout title="お問い合わせ｜燊然" description="燊然のお問い合わせ">
+<main id="main" class="wrap info-page" tabindex="-1">
+<a href={`${base}/`}>燊然居士 ホーム</a>
+<h1>お問い合わせ</h1>
+<p>燊然の情報発信に関するお問い合わせは、LINE公式アカウントからご連絡ください。</p>
+<p>
+<a href={lineUrl}>{siteSettings.lineName}</a>
+<br />公式アカウントID：{siteSettings.lineId}</p>
+<p>現在提供しているのは情報発信です。占いやAI相談の受付を案内するものではありません。</p>
+</main>
+</SiteLayout>
