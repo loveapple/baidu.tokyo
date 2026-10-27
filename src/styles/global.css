@@ -696,3 +696,6 @@ nav a:hover {
 .info-page a { text-decoration: underline; text-underline-offset: .2em; }
 .info-page dt { font-weight: bold; margin-top: 16px; }
 .info-page dd { margin-left: 0; }
+.philosophy-page section + section { margin-top: 48px; }
+.philosophy-page h2, .philosophy-intro h2 { font-size: clamp(22px, 3vw, 30px); line-height: 1.6; }
+.philosophy-intro p { max-width: 48em; line-height: 2; margin-block: 24px; }

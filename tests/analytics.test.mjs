@@ -43,14 +43,14 @@ test("delegated book clicks send once without cancelling navigation", () => {
 test("all pages share footer and production-only analytics", () => {
   const base = process.env.PUBLICATION_MODE === "production" ? "" : "/baidu.tokyo";
   const enabled = process.env.PUBLICATION_MODE === "production" && process.env.ANALYTICS_DISABLED !== "true";
-  for (const path of ["index.html", "operator/index.html", "privacy/index.html", "contact/index.html"]) {
+  for (const path of ["index.html", "operator/index.html", "privacy/index.html", "contact/index.html", "philosophy/index.html"]) {
     const html = readFileSync(`dist/${path}`, "utf8");
     const route = path === "index.html" ? "/" : `/${path.split("/")[0]}/`;
     const origin = process.env.PUBLICATION_MODE === "production" ? "https://baidu.tokyo" : "https://loveapple.github.io";
     assert.ok(html.includes(`rel="canonical" href="${origin}${base}${route}"`));
     assert.equal((html.match(/data-measurement-id=/g) || []).length, enabled ? 1 : 0);
     if (enabled) assert.ok(html.includes(siteSettings.measurementId));
-    for (const page of ["operator", "privacy", "contact"]) assert.ok(html.includes(`href="${base}/${page}/"`));
+    for (const page of ["operator", "privacy", "contact", "philosophy"]) assert.ok(html.includes(`href="${base}/${page}/"`));
     assert.ok(html.includes(lineUrl));
     assert.ok(html.includes("© 2026 燊然 / 運営：happinesea"));
   }
