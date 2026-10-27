@@ -26,7 +26,7 @@ test("LP has Japanese landmarks and verified book identity", () => {
   assert.match(html, /href="#main"/);
   assert.doesNotMatch(
     html,
-    /\bLINE\b|AIエージェント|相談受付|2027年末|正式稼働|ニュース収集|会員登録|<form|<iframe|<script/i,
+    /AIエージェント|相談受付|2027年末|正式稼働|ニュース収集|会員登録|<form|<iframe/i,
   );
 });
 
@@ -65,7 +65,7 @@ test("local assets and anchor destinations exist, images have alternatives and d
     assert.ok(match[1].startsWith(base), match[1]);
     assert.ok(
       existsSync(
-        new URL(`../dist/${match[1].slice(base.length)}`, import.meta.url),
+        new URL(`../dist/${match[1].slice(base.length)}${match[1].endsWith("/") ? "index.html" : ""}`, import.meta.url),
       ),
       match[1],
     );

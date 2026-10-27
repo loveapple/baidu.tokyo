@@ -688,3 +688,11 @@ nav a:hover {
     scroll-behavior: smooth;
   }
 }
+
+.footer-links { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 16px 24px; }
+.info-page { max-width: 850px; padding-block: 48px 80px; overflow-wrap: anywhere; }
+.info-page h1 { font-size: clamp(28px, 5vw, 42px); margin-block: 32px; }
+.info-page p { line-height: 2; margin-block: 24px; }
+.info-page a { text-decoration: underline; text-underline-offset: .2em; }
+.info-page dt { font-weight: bold; margin-top: 16px; }
+.info-page dd { margin-left: 0; }

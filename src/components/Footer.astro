@@ -1,0 +1,20 @@
+---
+import { siteSettings, lineUrl } from "../config/site.mjs";
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+---
+    <footer class="site-footer wrap">
+      <a class="footer-brand" href={`${base}/`}>
+        燊然居士<small>baidu.tokyo</small>
+      </a>
+      <p>古典を読み、社会を見つめ、自分の選択を考える。</p>
+      <a href="#main" class="back-top">
+        ページ上部へ <span aria-hidden="true">↑</span>
+      </a>
+      <nav class="footer-links" aria-label="運営情報">
+<a href={`${base}/operator/`}>運営者情報</a>
+<a href={`${base}/privacy/`}>プライバシーポリシー</a>
+<a href={`${base}/contact/`}>お問い合わせ</a>
+<a href={lineUrl}>{siteSettings.lineName}（LINE）</a>
+</nav>
+<small class="copyright">© 2026 燊然 / 運営：happinesea</small>
+    </footer>

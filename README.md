@@ -1,6 +1,6 @@
 # baidu.tokyo
 
-燊然居士の日本語著者・電子書籍紹介LP。Astroで静的HTMLを生成し、クライアントJavaScript、外部フォント、DB、フォームを使わない。
+燊然居士の日本語著者・電子書籍紹介LP。Astroで静的HTMLを生成する。本番のみGA4計測用JavaScriptを読み込み、外部フォント、DB、フォームは使わない。
 
 ## 開発・QA
 
@@ -15,6 +15,8 @@ npm run preview -- --host 127.0.0.1
 ```
 
 プレビュー: http://127.0.0.1:4321/baidu.tokyo/ 。`npm test` はbuild済みの `dist/` を検査する。Windows・Linux共通のNode標準test runnerを使用。
+
+GA4・Amazonイベント・LINE運営窓口と、外部送信を遮断する `npm run test:e2e` の手順は [docs/analytics-operator.md](docs/analytics-operator.md) を参照。
 
 - `src/pages/index.astro`: 文面・SEO/OGP・構造
 - `src/styles/global.css`: 和紙色・墨色・朱色、レスポンシブ表示とfocus表示

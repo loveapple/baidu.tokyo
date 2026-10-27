@@ -1,8 +1,7 @@
 ---
-import "../styles/global.css";
+import SiteLayout from "../layouts/SiteLayout.astro";
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
-const canonical = new URL(`${base}/`, Astro.site);
 const title = "燊然居士｜易を読み、変化を考える。";
 const description =
   "燊然居士の著者・電子書籍紹介。郝　春利著『脱依存の経済学』と、今後の執筆テーマである易経・六十四卦を紹介します。";
@@ -10,49 +9,7 @@ const bookUrl = "https://link.amazon/B0fDC1J7c";
 const authorUrl = "https://www.amazon.co.jp/stores/author/B08L4PG3P4/about";
 ---
 
-<!doctype html>
-<html lang="ja">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#f5f2e9" />
-    <title>{title}</title>
-    <meta name="description" content={description} />
-    <link rel="canonical" href={canonical} />
-    <link rel="icon" type="image/svg+xml" href={`${base}/favicon.svg`} />
-    <link rel="sitemap" href={`${base}/sitemap-index.xml`} />
-    <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="燊然居士｜baidu.tokyo" />
-    <meta property="og:locale" content="ja_JP" />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-    <meta property="og:url" content={canonical} />
-    <meta
-      property="og:image"
-      content={new URL(`${base}/images/ogp.png`, Astro.site)}
-    />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta
-      property="og:image:alt"
-      content="燊然居士。易を読み、変化を考える。"
-    />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={title} />
-    <meta name="twitter:description" content={description} />
-    <meta
-      name="twitter:image"
-      content={new URL(`${base}/images/ogp.png`, Astro.site)}
-    />
-    <meta
-      name="twitter:image:alt"
-      content="燊然居士。易を読み、変化を考える。"
-    />
-  </head>
-  <body>
-    <a class="skip-link" href="#main">
-      本文へ移動
-    </a>
+<SiteLayout title={title} description={description}>
     <header class="site-header wrap">
       <a class="brand" href={`${base}/`} aria-label="燊然居士 ホーム">
         <span class="brand-seal" aria-hidden="true">
@@ -169,13 +126,14 @@ const authorUrl = "https://www.amazon.co.jp/stores/author/B08L4PG3P4/about";
               <a
                 class="button"
                 href={bookUrl}
+                data-amazon-book="脱依存の経済学"
                 rel="sponsored noopener noreferrer"
               >
                 Amazonで書籍を見る <span aria-hidden="true">↗</span>
               </a>
               <p class="source-note">
                 書籍情報・表紙：
-                <a href="https://www.amazon.co.jp/dp/B0HB34S81L">
+                <a href="https://www.amazon.co.jp/dp/B0HB34S81L" data-amazon-book="脱依存の経済学">
                   Amazon商品ページ
                 </a>
                 。価格・配信状況はAmazonでご確認ください。
@@ -259,15 +217,4 @@ const authorUrl = "https://www.amazon.co.jp/stores/author/B08L4PG3P4/about";
       </section>
     </main>
 
-    <footer class="site-footer wrap">
-      <a class="footer-brand" href={`${base}/`}>
-        燊然居士<small>baidu.tokyo</small>
-      </a>
-      <p>古典を読み、社会を見つめ、自分の選択を考える。</p>
-      <a href="#main" class="back-top">
-        ページ上部へ <span aria-hidden="true">↑</span>
-      </a>
-      <small class="copyright">© {new Date().getFullYear()} 燊然居士</small>
-    </footer>
-  </body>
-</html>
+</SiteLayout>
